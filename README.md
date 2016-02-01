@@ -1,4 +1,4 @@
-# weatherologic:
+# weatherologic
 
 ## README:
 Schreibt alle 6 Minuten Messwerte der Temperatur- Luftdruck- sowie Feuchtigkeitswerte in die DB.
