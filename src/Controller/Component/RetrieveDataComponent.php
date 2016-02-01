@@ -30,7 +30,7 @@ class RetrieveDataComponent extends Component
       }
 
       $t_messwerte = TableRegistry::get('Messwerte');
-      $verlauf = $t_messwerte->find();
+      $verlauf = $t_messwerte->find('all', array('order' => array('id'), 'group' => 'hour(timestamp)'));
       $verlauf = $verlauf
       ->select(['maxtemp' => $verlauf->func()->max('temperatur_1')])
       ->select(['stamp' => $verlauf->func()->max('timestamp')])
@@ -43,10 +43,8 @@ class RetrieveDataComponent extends Component
         }
       })
 
-      ->group(['week(timestamp)'])
-      ->group([$RDgroup.'(timestamp)'])
-
-      ->order('id', 'timestamp')
+      // ->group(['week(timestamp)'])
+      // ->group([$RDgroup.'(timestamp)'])
 
       ->limit($RDlimit)
       ->toArray();

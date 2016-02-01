@@ -42,7 +42,7 @@ class WetterController extends AppController
     // =========================================================================
 
     // übergebene Variablen: von, bis, Zeitraum(Day, Week, Month, Year), Gruppierung (Minute, Stunde, Tag), Zeitformatierung, Limit
-    $RDgetData = $this->RetrieveData->getData(null, null, '-1 day', 'hour', 'd,m G:i', '30');
+    $RDgetData = $this->RetrieveData->getData(null, null, '-4 hours', 'minute', 'd,m G:i', '30');
     $this->set('verlauf_aktuell_humidity', $RDgetData[0]);
     $this->set('verlauf_aktuell_items', $RDgetData[1]);
     $this->set('verlauf_aktuell_bars', $RDgetData[2]);
@@ -69,44 +69,11 @@ class WetterController extends AppController
       // =========================================================================
       // Verlauf des Tages
       // =========================================================================
-      $t_messwerte = TableRegistry::get('Messwerte');
-      $verlauf_tag = $t_messwerte->find();
-      $verlauf_tag = $verlauf_tag
-      ->select(['maxtemp' => $verlauf_tag->func()->max('temperatur_1')])
-      ->select(['stamp' => $verlauf_tag->func()->max('timestamp')])
-      ->select(['maxbar' => $verlauf_tag->func()->max('luftdruck_2')])
-      ->select(['maxhum' => $verlauf_tag->func()->max('luftfeuchtigkeit_1')])
-      ->where(['timestamp >' => new \DateTime('-1 day')])
-      ->group(['day(timestamp)'])
-      ->group(['hour(timestamp)'])
-      ->order(['id' => 'desc'])
-      // ->limit(24)
-      ->toArray();
-
-      $verlauf_tag_reverse = array_reverse($verlauf_tag);
-      $verlauf_tag = $verlauf_tag_reverse;
-
-
-      $verlauf_tag_humidity = array();
-      $verlauf_tag_items = array();
-      $verlauf_tag_bars = array();
-      $verlauf_tag_tage = array();
-
-      foreach ($verlauf_tag as $jeder_tag) {
-        $verlauf_tag_humidity[] = $jeder_tag->maxhum;
-        $verlauf_tag_bars[] = $jeder_tag->maxbar;
-        $verlauf_tag_items[] = $jeder_tag->maxtemp;
-        $verlauf_tag_tage[] = '"'.date('G:i', strtotime(str_replace('-','/', $jeder_tag->stamp))).' Uhr'.'"';
-      }
-
-      $verlauf_tag_humidity_1 = implode(', ', $verlauf_tag_humidity);
-      $verlauf_tag_items_1 = implode(', ', $verlauf_tag_items);
-      $verlauf_tag_bars_1 = implode(', ', $verlauf_tag_bars);
-      $verlauf_tag_tage_1 = implode(', ', $verlauf_tag_tage);
-      $this->set('verlauf_tag_humidity', $verlauf_tag_humidity_1);
-      $this->set('verlauf_tag_items', $verlauf_tag_items_1);
-      $this->set('verlauf_tag_bars', $verlauf_tag_bars_1);
-      $this->set('verlauf_tag_tage', $verlauf_tag_tage_1);
+    $RDgetData = $this->RetrieveData->getData(null, null, '-1 day', 'hour', 'd,m G:i', '30');
+    $this->set('verlauf_tag_humidity', $RDgetData[0]);
+    $this->set('verlauf_tag_items', $RDgetData[1]);
+    $this->set('verlauf_tag_bars', $RDgetData[2]);
+    $this->set('verlauf_tag_tage', $RDgetData[3]);
       // =========================================================================
     }
 
